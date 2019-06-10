@@ -89,8 +89,10 @@
       });
 
       function onView(id, view){
+        console.log(id+" : "+view);
+        view = parseInt(view)+1;
         db.collection("company").doc(id).update({
-            views: parseInt(view) + 1    
+            views: view,
         });
       }
     </script>
