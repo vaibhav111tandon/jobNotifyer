@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Job Notifyer</title>
+    <link rel="stylesheet" href="./styles.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+      
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button
+            type="button"
+            class="navbar-toggle"
+            data-toggle="collapse"
+            data-target="#myNavbar"
+          >
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Job Notifyer</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#active">Active</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <h2 class="text-center heading">Active</h2>
+      <br><br>
+      <div id="main-div" id="active"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/6.1.0/firebase-app.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/6.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.1.0/firebase-firestore.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyD6i4Ukn-vdNbSnf1faQEibbYYT5gBkifM",
+        authDomain: "jobnotifyer.firebaseapp.com",
+        databaseURL: "https://jobnotifyer.firebaseio.com",
+        projectId: "jobnotifyer",
+        storageBucket: "",
+        messagingSenderId: "230672798088",
+        appId: "1:230672798088:web:8ce01c123c33bf7e"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      const db = firebase.firestore();
+
+      var docRef = db.collection("company");
+      docRef.get().then(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
+          //console.dir(doc.data()["name"]);
+
+          var cont = document.querySelector("#main-div");
+          cont.innerHTML += `
+                        <div class="container-fluid sub-div">
+                            <h3>`+doc.data()['name']+`</h3>
+                            <p><span class="dd">Registration Ends: </span>`+doc.data()['date']+`</p>
+                            <p><span class="dd">Eligible: </span>`+doc.data()['eligible']+`</p>
+                            <p><span class="dd">Rounds : </span>`+doc.data()['Rounds']+`</p>
+                            <p><span class="dd">Status : </span>`+doc.data()['status']+`</p>
+                            <div class="text-right">
+                                <p style="float:left"><span class="dd">Views:</span>`+doc.data()['views']+`</p>
+                                <a href="`+doc.data()['url']+`" class="btn btn-primary register" onclick=onView('`+doc.id+`','`+doc.data()['views']+`')>Register</a>
+                            </div>
+                        </div>
+                `;
+        });
+      });
+
+      function onView(id, view){
+        db.collection("company").doc(id).update({
+            views: parseInt(view) + 1    
+        });
+      }
+    </script>
+  </body>
+</html>
